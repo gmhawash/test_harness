@@ -1,11 +1,28 @@
+class MissingConfiguration < Exception; end
+
 class TestHarness
   module UIComponentHelper
+    def mm
+      TestHarness.mm
+    end
+
     def component
       self.class.parent.component
     end
 
     def reset
       @form = nil
+    end
+
+    def configuration
+      TestHarness.configuration
+    end
+
+    def browser
+      @browser ||= begin
+        raise MissingConfiguration.new('TestHarness.browser must be defined') if configuration.browser.nil?
+        configuration.browser
+       end
     end
 
     # If the UIComponent is sent a message it does not understand, it will
